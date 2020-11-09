@@ -1,4 +1,6 @@
 const jsonServer = require('json-server')
+const fs = require('fs')
+const path = require('path')
 const server = jsonServer.create()
 const router = jsonServer.router('data.json')
 const middlewares = jsonServer.defaults()
@@ -9,14 +11,14 @@ router.render = (request, response) => {
     response.header('Access-Control-Request-Headers', '*');
     response.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     response.header('Access-Control-Request-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-
+    const result = JSON.parse(fs.readFileSync(path.join("data.json"), "utf8"));
     if (Array.isArray(response.locals.data)) {
         response.json({
             status: 200,
             success: true,
             data: {
                 items: result,
-                _links: req.url,
+                _links: request.url,
                 _meta: {
                     currentPage: 1,
                     page: 1,
